@@ -1,4 +1,4 @@
-# credit_card_fd/app/app.py
+
 
 import streamlit as st
 import pandas as pd
@@ -7,9 +7,8 @@ from pathlib import Path
 from datetime import date
 import matplotlib.pyplot as plt
 
-# ----------------------------
 # Config
-# ----------------------------
+
 st.set_page_config(page_title="Credit Card Fraud Detection", page_icon="💳", layout="centered")
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,9 +27,9 @@ def load_model(model_path: Path):
 
 model = load_model(MODEL_PATH)
 
-# ----------------------------
+
 # Load dataset (REQUIRED)
-# ----------------------------
+
 @st.cache_data
 def load_data(csv_path: Path):
     if not csv_path.exists():
@@ -47,9 +46,9 @@ def load_data(csv_path: Path):
 
 df_data = load_data(DATA_PATH)
 
-# ----------------------------
+
 # Build dropdown options (only from data)
-# ----------------------------
+
 def top_k(series: pd.Series, k: int = 30):
     return series.value_counts().head(k).index.tolist()
 
@@ -58,14 +57,10 @@ category_choices = top_k(df_data["category"], 30)
 job_choices = top_k(df_data["job"], 30)
 state_choices = sorted(df_data["state"].dropna().unique().tolist())
 
-# IMPORTANT: model expects original "merchant" column name.
-# Since we removed fraud_ from UI, we will ALSO remove fraud_ in model input.
-# (This only works correctly if you retrained the model after removing fraud_)
-# If your saved model still expects fraud_ merchants, retrain or map back.
 
-# ----------------------------
+
 # Expected columns (from your training X)
-# ----------------------------
+
 EXPECTED_COLS = [
     "merchant",
     "category",
@@ -99,9 +94,9 @@ HIDDEN_DEFAULTS = {
     "unix_time": 0,
 }
 
-# ----------------------------
+
 # UI
-# ----------------------------
+
 st.title("💳 Credit Card Fraud Detection")
 st.write("Clean UI. Dropdowns are populated only from your dataset (no fallback).")
 
@@ -140,9 +135,9 @@ with st.form("fraud_form"):
 
     submitted = st.form_submit_button("Predict fraud risk")
 
-# ----------------------------
+
 # Predict + Analysis
-# ----------------------------
+
 if submitted:
     trans_dayofweek = trans_date.weekday()
     trans_month = trans_date.month
